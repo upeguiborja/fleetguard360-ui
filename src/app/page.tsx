@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 export default function Home() {
   return (
     <div className="w-full h-65 bg-gradient-to-b from-[#0086C9] via-[#D1E9FF] via-80% to-[#FFFFFF] flex justify-center items-center">
