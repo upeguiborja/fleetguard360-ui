@@ -1,17 +1,40 @@
 import { FunctionComponent } from "react";
+import Spinner from "./Spinner";
+import clsx from "@/utils/clsx";
 
 type ButtonProps = {
   label?: string;
+  isLoading?: boolean;
+  type?: "button" | "submit" | "reset";
+  onClick?: () => void;
 };
 
-const Button: FunctionComponent<ButtonProps> = ({ label }) => {
+const baseClasses =
+  "bg-[#0086C9] text-white py-2 px-3.5 w-full rounded-lg h-min flex justify-center items-center";
+const enabledClasses = "cursor-pointer";
+const disabledClasses = "cursor-not-allowed opacity-50";
+
+const Button: FunctionComponent<ButtonProps> = ({ label, isLoading, type = "button", onClick }) => {
+
+  function handleClick(event: React.MouseEvent<HTMLButtonElement>) {
+    event.preventDefault();
+
+    if (onClick && !isLoading) {
+      onClick();
+    }
+  }
+
   return (
     <button
-      className="bg-[#0086C9] text-white py-2 px-3.5 w-full rounded-lg h-min"
-      type="submit"
+      className={clsx(
+        baseClasses,
+        isLoading ? disabledClasses : enabledClasses
+      )}
       aria-label={label ? label : "Button"}
+      onClick={onClick && handleClick}
+      type={type}
     >
-      {label}
+      {isLoading ? <Spinner /> : label}
     </button>
   );
 };
