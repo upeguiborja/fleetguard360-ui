@@ -117,7 +117,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className="w-full flex justify-center">
+      <div className="w-full flex justify-center pb-20">
         <div className="max-w-7xl grow flex flex-col gap-6">
           {loading ? (
             <div className="flex justify-center py-8">
