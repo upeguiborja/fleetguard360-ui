@@ -1,8 +1,32 @@
+"use client"
 import RouteCard from "@/components/RouteCard";
-import { mockRoutes } from "@/mocks";
+import api from "@/utils/api";
+import { Route } from "@/types";
 import Image from "next/image";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import Spinner from "@/components/Spinner";
 
 export default function Home() {
+  const [routes, setRoutes] = useState<Route[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate fetching routes from an API
+    fetchRoutes();
+  }, []);
+
+  async function fetchRoutes() {
+    setLoading(true);
+    try {
+      const fetchedRoutes = await api.get<Route[]>("/fg-api/routes");
+      setRoutes(fetchedRoutes);
+    } catch {
+      toast.error("Error fetching routes. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <>
@@ -67,9 +91,15 @@ export default function Home() {
       </div>
       <div className="w-full flex justify-center">
         <div className="max-w-7xl grow flex flex-col gap-6">
-          {mockRoutes .map((route, index) => (
-            <RouteCard route={route} key={index} />
-          ))}
+          {loading ? (
+            <div className="flex justify-center py-8">
+              <Spinner />
+            </div>
+          ) : (
+            routes.map((route, index) => (
+              <RouteCard route={route} key={index} />
+            ))
+          )}
         </div>
       </div>
     </>

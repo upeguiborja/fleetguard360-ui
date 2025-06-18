@@ -1,21 +1,19 @@
 import { Route } from "@/types";
-import { format } from "date-fns";
 import Button from "./Button";
 
 type RouteCardProps = {
   route: Route;
 };
 
+const formatTime = (time: string) => time.slice(0, 5);
+
 const RouteCard: React.FunctionComponent<RouteCardProps> = ({ route }) => {
   return (
     <div className="rounded-lg overflow-hidden flex bg-white">
       <div className="grow p-4 flex items-center gap-4">
         <div>
-          <p className="text-lg/7 font-bold">
-            {format(route.startTime, "hh:mm aa")}
-          </p>
-          <p className="text-sm/4.5">{route.origin}</p>
-          <p className="text-xs">{format(route.startTime, "MMMM dd")}</p>
+          <p className="text-lg/7 font-bold">{formatTime(route.startTime)}</p>
+          <p className="text-sm/4.5">{route.firstStopName}</p>
         </div>
 
         <span className="grow border-b-1 border-b-[#E9EAEB]"></span>
@@ -27,11 +25,8 @@ const RouteCard: React.FunctionComponent<RouteCardProps> = ({ route }) => {
         <span className="grow border-b-1 border-b-[#E9EAEB]"></span>
 
         <div>
-          <p className="text-lg/7 font-bold">
-            {format(route.endTime, "hh:mm aa")}
-          </p>
-          <p className="text-sm/4.5">{route.destination}</p>
-          <p className="text-xs">{format(route.endTime, "MMMM dd")}</p>
+          <p className="text-lg/7 font-bold">{formatTime(route.endTime)}</p>
+          <p className="text-sm/4.5">{route.lastStopName}</p>
         </div>
       </div>
       <div className="bg-[#F5FAFF] py-4 pr-4 pl-6 flex gap-3 items-center">
@@ -45,7 +40,6 @@ const RouteCard: React.FunctionComponent<RouteCardProps> = ({ route }) => {
             })}
           </p>
         </div>
-
 
         <Button label="Reservar" />
       </div>
