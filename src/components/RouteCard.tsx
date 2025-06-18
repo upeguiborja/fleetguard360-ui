@@ -44,7 +44,7 @@ const RouteCard: React.FunctionComponent<RouteCardProps> = ({ route, onSuccessRe
 
         <span className="grow border-b-1 border-b-[#E9EAEB]"></span>
 
-        <div>
+        <div className="text-right">
           <p className="text-lg/7 font-bold">{formatTime(route.endTime)}</p>
           <p className="text-sm/4.5">{route.lastStopName}</p>
         </div>
