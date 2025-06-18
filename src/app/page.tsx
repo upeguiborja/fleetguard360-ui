@@ -7,12 +7,17 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import Spinner from "@/components/Spinner";
 import Select from "@/components/Select";
+import Button from "@/components/Button";
+import Dialog from "@/components/Dialog";
 
 export default function Home() {
   const [routes, setRoutes] = useState<Route[]>([]);
   const [loading, setLoading] = useState(true);
+  const [pendingOrigin, setPendingOrigin] = useState("");
+  const [pendingDestination, setPendingDestination] = useState("");
   const [selectedOrigin, setSelectedOrigin] = useState("");
   const [selectedDestination, setSelectedDestination] = useState("");
+  const [dialogOpen, setDialogOpen] = useState(true);
 
   const firstStopNames = Array.from(new Set(routes.map(route => route.firstStopName)));
   const lastStopNames = Array.from(new Set(routes.map(route => route.lastStopName)));
@@ -25,7 +30,6 @@ export default function Home() {
   });
 
   useEffect(() => {
-    // Simulate fetching routes from an API
     fetchRoutes();
   }, []);
 
@@ -39,6 +43,11 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
+  }
+
+  function handleSearch() {
+    setSelectedOrigin(pendingOrigin);
+    setSelectedDestination(pendingDestination);
   }
 
   return (
@@ -58,36 +67,31 @@ export default function Home() {
 
           <div className="bg-white rounded-lg flex items-end gap-8 p-4">
             <div className="flex flex-col gap-y-1.5 text-sm grow">
-              <label htmlFor="Search-Origin">Origen</label>
-              <div>
-                <Select
-                  id="Search-Origin"
-                  name="origen"
-                  label="Origen"
-                  value={selectedOrigin}
-                  options={firstStopNames}
-                  onChange={e => setSelectedOrigin(e.target.value)}
-                  placeholder="Selecciona tu origen"
-                />
-              </div>
+              <Select
+                id="Search-Origin"
+                name="origen"
+                label="Origen"
+                value={pendingOrigin}
+                options={firstStopNames}
+                onChange={e => setPendingOrigin(e.target.value)}
+                placeholder="Selecciona tu origen"
+              />
             </div>
 
             <div className="flex flex-col gap-y-1.5 text-sm grow">
-              <label htmlFor="Search-Destination">Destino</label>
-              <div>
-                <Select
-                  id="Search-Destination"
-                  name="destino"
-                  label="Destino"
-                  value={selectedDestination}
-                  options={lastStopNames}
-                  onChange={e => setSelectedDestination(e.target.value)}
-                  placeholder="Selecciona tu destino"
-                  disabled={!selectedOrigin}
-                />
-              </div>
+              <Select
+                id="Search-Destination"
+                name="destino"
+                label="Destino"
+                value={pendingDestination}
+                options={lastStopNames}
+                onChange={e => setPendingDestination(e.target.value)}
+                placeholder="Selecciona tu destino"
+                disabled={!pendingOrigin}
+              />
             </div>
 
+            {/*
             <div className="flex flex-col gap-y-1.5 text-sm grow">
               <label htmlFor="Search-Date">Fecha</label>
               <div>
@@ -100,10 +104,9 @@ export default function Home() {
                 />
               </div>
             </div>
+            */}
 
-            <button className="bg-[#0086C9] text-white py-2.5 px-4 rounded-lg h-min">
-              Buscar
-            </button>
+            <Button label="Buscar" onClick={handleSearch} className="w-min" />
           </div>
         </div>
       </div>
@@ -120,6 +123,15 @@ export default function Home() {
           )}
         </div>
       </div>
+
+      <Dialog isOpen={dialogOpen} onClose={() => setDialogOpen(false)}>
+        <Dialog.SuccessIcon />
+        <p className="text-lg/7 font-semibold mt-5">Tu reserva se realizó exitosamente</p>
+        <p className="text-sm/5 text-[#535862] mt-2">
+          La reserva #[NúmeroDeReserva] se realizó exitosamente.<br /><br />
+          Encontrarás los detalles de tu viaje, incluyendo fecha, hora y vehículo asignado, en el correo de confirmación que te hemos enviado.
+        </p>
+      </Dialog>
     </>
   );
 }

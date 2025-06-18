@@ -17,7 +17,7 @@ const Select: React.FC<SelectProps> = ({ id, name, label, value, options, onChan
     <div>
       <select
         className={clsx(
-          "w-full h-11 rounded-lg px-3.5 py-2.5 border-1 border-[#D5D7DA]",
+          "w-full h-11 rounded-lg pl-3.5 pr-8 py-2.5 border-1 border-[#D5D7DA]", // pr-8 for extra right padding
           disabled && "bg-[#F5F5F5] text-[#A4A7AE] cursor-not-allowed"
         )}
         id={id}

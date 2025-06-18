@@ -7,14 +7,15 @@ type ButtonProps = {
   isLoading?: boolean;
   type?: "button" | "submit" | "reset";
   onClick?: () => void;
+  className?: string;
 };
 
 const baseClasses =
-  "bg-[#0086C9] text-white py-2 px-3.5 w-full rounded-lg h-min flex justify-center items-center";
+  "bg-[#0086C9] text-white py-2 px-3.5 rounded-lg h-min flex justify-center items-center";
 const enabledClasses = "cursor-pointer";
 const disabledClasses = "cursor-not-allowed opacity-50";
 
-const Button: FunctionComponent<ButtonProps> = ({ label, isLoading, type = "button", onClick }) => {
+const Button: FunctionComponent<ButtonProps> = ({ label, isLoading, type = "button", onClick, className }) => {
 
   function handleClick(event: React.MouseEvent<HTMLButtonElement>) {
     event.preventDefault();
@@ -28,7 +29,8 @@ const Button: FunctionComponent<ButtonProps> = ({ label, isLoading, type = "butt
     <button
       className={clsx(
         baseClasses,
-        isLoading ? disabledClasses : enabledClasses
+        isLoading ? disabledClasses : enabledClasses,
+        className
       )}
       aria-label={label ? label : "Button"}
       onClick={onClick && handleClick}
