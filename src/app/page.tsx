@@ -6,10 +6,23 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import Spinner from "@/components/Spinner";
+import Select from "@/components/Select";
 
 export default function Home() {
   const [routes, setRoutes] = useState<Route[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedOrigin, setSelectedOrigin] = useState("");
+  const [selectedDestination, setSelectedDestination] = useState("");
+
+  const firstStopNames = Array.from(new Set(routes.map(route => route.firstStopName)));
+  const lastStopNames = Array.from(new Set(routes.map(route => route.lastStopName)));
+
+  const filteredRoutes = routes.filter(route => {
+    return (
+      (!selectedOrigin || route.firstStopName === selectedOrigin) &&
+      (!selectedDestination || route.lastStopName === selectedDestination)
+    );
+  });
 
   useEffect(() => {
     // Simulate fetching routes from an API
@@ -47,11 +60,13 @@ export default function Home() {
             <div className="flex flex-col gap-y-1.5 text-sm grow">
               <label htmlFor="Search-Origin">Origen</label>
               <div>
-                <input
-                  className="w-full h-11 rounded-lg px-3.5 py-2.5 border-1 border-[#D5D7DA]"
-                  type="text"
+                <Select
                   id="Search-Origin"
                   name="origen"
+                  label="Origen"
+                  value={selectedOrigin}
+                  options={firstStopNames}
+                  onChange={e => setSelectedOrigin(e.target.value)}
                   placeholder="Selecciona tu origen"
                 />
               </div>
@@ -60,12 +75,15 @@ export default function Home() {
             <div className="flex flex-col gap-y-1.5 text-sm grow">
               <label htmlFor="Search-Destination">Destino</label>
               <div>
-                <input
-                  className="w-full h-11 rounded-lg px-3.5 py-2.5 border-1 border-[#D5D7DA]"
-                  type="text"
+                <Select
                   id="Search-Destination"
                   name="destino"
+                  label="Destino"
+                  value={selectedDestination}
+                  options={lastStopNames}
+                  onChange={e => setSelectedDestination(e.target.value)}
                   placeholder="Selecciona tu destino"
+                  disabled={!selectedOrigin}
                 />
               </div>
             </div>
@@ -96,8 +114,8 @@ export default function Home() {
               <Spinner />
             </div>
           ) : (
-            routes.map((route, index) => (
-              <RouteCard route={route} key={index} />
+            filteredRoutes.map((route) => (
+              <RouteCard route={route} key={route.id} />
             ))
           )}
         </div>
