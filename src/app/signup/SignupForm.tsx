@@ -1,6 +1,7 @@
 "use client";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
+import api from "@/utils/api";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -18,26 +19,10 @@ const SignupForm = () => {
     console.log("Phone submitted:", phone);
 
     try {
-      const res = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, phone }),
-      });
-
-      if (res.ok) {
-        toast.success(
-          "Registro exitoso. Por favor, revisa tu correo electrónico para verificar tu cuenta."
-        );
-      }
-
-      if (!res.ok) {
-        const error = await res.json();
-        toast.error(
-          `¡Ups! Ocurrió un error: ${error.message || "Error desconocido"}`
-        );
-      }
+      await api.post("/api/auth/signup", { email, phone });
+      toast.success(
+        "Registro exitoso. Por favor, revisa tu correo electrónico para verificar tu cuenta."
+      );
     } catch {
       toast.error(
         "Ocurrió un error al procesar tu registro. Por favor, inténtalo de nuevo más tarde."

@@ -1,14 +1,25 @@
 "use client";
-
 import Button from "@/components/Button";
 import Input from "@/components/Input";
+import api from "@/utils/api";
+import { useState } from "react";
+import { toast } from "sonner";
 
 const LoginForm = () => {
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  const [isLoading, setIsLoading] = useState(false);
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    setIsLoading(true);
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const email = formData.get("email") as string;
-    console.log("Email submitted:", email);
+    try {
+      await api.post("/api/auth/login", { email })
+      toast.success("Te hemos enviado un enlace de acceso a tu correo electrónico. Por favor revisa tu bandeja de entrada para continuar.");
+    } catch {
+      toast.error("Error al iniciar sesión. Por favor, inténtalo de nuevo.");
+    }
+    setIsLoading(false);
   }
 
   return (
@@ -22,7 +33,7 @@ const LoginForm = () => {
         required
       />
 
-      <Button label="Iniciar sesión" />
+      <Button label="Iniciar sesión" type="submit" isLoading={isLoading}/>
     </form>
   );
 };
