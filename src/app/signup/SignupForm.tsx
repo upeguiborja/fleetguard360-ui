@@ -19,7 +19,7 @@ const SignupForm = () => {
     console.log("Phone submitted:", phone);
 
     try {
-      await api.post("/api/auth/signup", { email, phone });
+      await api.post("/fg-api/auth/signup", { email, phone });
       toast.success(
         "Registro exitoso. Por favor, revisa tu correo electrónico para verificar tu cuenta."
       );

@@ -14,7 +14,7 @@ const LoginForm = () => {
     const formData = new FormData(event.currentTarget);
     const email = formData.get("email") as string;
     try {
-      await api.post("/api/auth/login", { email })
+      await api.post("/fg-api/auth/login", { email })
       toast.success("Te hemos enviado un enlace de acceso a tu correo electrónico. Por favor revisa tu bandeja de entrada para continuar.");
     } catch {
       toast.error("Error al iniciar sesión. Por favor, inténtalo de nuevo.");
