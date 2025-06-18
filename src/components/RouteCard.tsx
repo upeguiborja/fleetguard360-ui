@@ -1,13 +1,31 @@
 import { Route } from "@/types";
 import Button from "./Button";
+import { useState } from "react";
+import api from "@/utils/api";
+import { toast } from "sonner";
 
 type RouteCardProps = {
   route: Route;
+  onSuccessReservation?: (confirmationNumber: string) => void;
 };
 
 const formatTime = (time: string) => time.slice(0, 5);
 
-const RouteCard: React.FunctionComponent<RouteCardProps> = ({ route }) => {
+const RouteCard: React.FunctionComponent<RouteCardProps> = ({ route, onSuccessReservation }) => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  async function handleReservation(routeId: string) {
+    setIsLoading(true);
+    try {
+      const result = await api.post<{ confirmationNumber: string }>("/fg-api/reservations", { routeId });
+      if (onSuccessReservation) onSuccessReservation(result.confirmationNumber);
+    } catch {
+      toast.error("No se pudo realizar la reserva. Intenta de nuevo.");
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   return (
     <div className="rounded-lg overflow-hidden flex bg-white">
       <div className="grow p-4 flex items-center gap-4">
@@ -19,7 +37,9 @@ const RouteCard: React.FunctionComponent<RouteCardProps> = ({ route }) => {
         <span className="grow border-b-1 border-b-[#E9EAEB]"></span>
 
         <div className="text-xs/4.5 text-[#535862]">
-          {route.numberOfStops > 1 ? `${route.numberOfStops} Paradas` : "Directo"}
+          {route.numberOfStops > 1
+            ? `${route.numberOfStops} Paradas`
+            : "Directo"}
         </div>
 
         <span className="grow border-b-1 border-b-[#E9EAEB]"></span>
@@ -41,7 +61,7 @@ const RouteCard: React.FunctionComponent<RouteCardProps> = ({ route }) => {
           </p>
         </div>
 
-        <Button label="Reservar" />
+        <Button label="Reservar" isLoading={isLoading} onClick={() => handleReservation(route.id)} />
       </div>
     </div>
   );

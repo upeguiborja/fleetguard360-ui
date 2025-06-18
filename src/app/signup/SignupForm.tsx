@@ -45,7 +45,6 @@ const SignupForm = () => {
       <Input
         id="Signup-Phone"
         name="phone"
-        pattern="^\(\d{3}\)\d{3}\d{4}$"
         type="tel"
         label="Teléfono"
         placeholder="+57 (300) 123 4567"

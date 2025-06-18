@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import RouteCard from "@/components/RouteCard";
 import api from "@/utils/api";
 import { Route } from "@/types";
@@ -17,12 +17,19 @@ export default function Home() {
   const [pendingDestination, setPendingDestination] = useState("");
   const [selectedOrigin, setSelectedOrigin] = useState("");
   const [selectedDestination, setSelectedDestination] = useState("");
-  const [dialogOpen, setDialogOpen] = useState(true);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [confirmationNumber, setConfirmationNumber] = useState<string | null>(
+    null
+  );
 
-  const firstStopNames = Array.from(new Set(routes.map(route => route.firstStopName)));
-  const lastStopNames = Array.from(new Set(routes.map(route => route.lastStopName)));
+  const firstStopNames = Array.from(
+    new Set(routes.map((route) => route.firstStopName))
+  );
+  const lastStopNames = Array.from(
+    new Set(routes.map((route) => route.lastStopName))
+  );
 
-  const filteredRoutes = routes.filter(route => {
+  const filteredRoutes = routes.filter((route) => {
     return (
       (!selectedOrigin || route.firstStopName === selectedOrigin) &&
       (!selectedDestination || route.lastStopName === selectedDestination)
@@ -73,7 +80,7 @@ export default function Home() {
                 label="Origen"
                 value={pendingOrigin}
                 options={firstStopNames}
-                onChange={e => setPendingOrigin(e.target.value)}
+                onChange={(e) => setPendingOrigin(e.target.value)}
                 placeholder="Selecciona tu origen"
               />
             </div>
@@ -85,7 +92,7 @@ export default function Home() {
                 label="Destino"
                 value={pendingDestination}
                 options={lastStopNames}
-                onChange={e => setPendingDestination(e.target.value)}
+                onChange={(e) => setPendingDestination(e.target.value)}
                 placeholder="Selecciona tu destino"
                 disabled={!pendingOrigin}
               />
@@ -118,7 +125,14 @@ export default function Home() {
             </div>
           ) : (
             filteredRoutes.map((route) => (
-              <RouteCard route={route} key={route.id} />
+              <RouteCard
+                route={route}
+                key={route.id}
+                onSuccessReservation={(confirmationNumber) => {
+                  setConfirmationNumber(confirmationNumber);
+                  setDialogOpen(true);
+                }}
+              />
             ))
           )}
         </div>
@@ -126,10 +140,15 @@ export default function Home() {
 
       <Dialog isOpen={dialogOpen} onClose={() => setDialogOpen(false)}>
         <Dialog.SuccessIcon />
-        <p className="text-lg/7 font-semibold mt-5">Tu reserva se realizó exitosamente</p>
-        <p className="text-sm/5 text-[#535862] mt-2">
-          La reserva #[NúmeroDeReserva] se realizó exitosamente.<br /><br />
-          Encontrarás los detalles de tu viaje, incluyendo fecha, hora y vehículo asignado, en el correo de confirmación que te hemos enviado.
+        <p className="text-lg/7 font-semibold mt-5 text-center">
+          Tu reserva se realizó exitosamente
+        </p>
+        <p className="text-sm/5 text-[#535862] mt-2 text-center">
+          La reserva #{confirmationNumber ?? "-"} se realizó exitosamente.
+          <br />
+          <br />
+          Encontrarás los detalles de tu viaje, incluyendo fecha, hora y
+          vehículo asignado, en el correo de confirmación que te hemos enviado.
         </p>
       </Dialog>
     </>
